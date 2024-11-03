@@ -13,7 +13,10 @@ import { uploadPhoto } from "../api/cloudinary";
 
 const ProfileEdit = ({ setIsEditing }) => {
   const user = useSelector((store) => store.user.user);
-  const [toast, setToast] = useState(false);
+  const [toast, setToast] = useState({
+    show: false,
+    isError: false,
+  });
   const [formValues, setFormValues] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
@@ -27,7 +30,6 @@ const ProfileEdit = ({ setIsEditing }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
-  const CLOUDINARY_BASE_URL = import.meta.env.VITE_CLOUDINARY_BASE_URL;
 
   const validationSchema = Yup.object({
     firstName: Yup.string()
@@ -42,7 +44,10 @@ const ProfileEdit = ({ setIsEditing }) => {
       .min(12, "Must be at least 12")
       .max(100, "Too High!")
       .required("Required"),
-    about: Yup.string().min(10, "Too Short!").max(50, "Too Long!"),
+    about: Yup.string()
+      .min(10, "Too Short!")
+      .max(160, "Too Long!")
+      .required("Required"),
     gender: Yup.string()
       .oneOf(["male", "female", "other"], "Invalid Gender")
       .required("Required"),
@@ -70,10 +75,12 @@ const ProfileEdit = ({ setIsEditing }) => {
     try {
       const data = await profileUpdate(values, user);
       dispatch(setUser(data?.data?.user));
-      setToast(true);
-      setTimeout(() => setToast(false), 3000);
+      setToast({ show: true, isError: false });
+      setTimeout(() => setToast({ show: false }), 3000);
       navigate("/feed");
     } catch (error) {
+      setToast({ show: true, isError: true });
+      setTimeout(() => setToast({ show: false }), 3000);
       console.error("Error updating profile", error);
     }
     setSubmitting(false);
@@ -81,12 +88,21 @@ const ProfileEdit = ({ setIsEditing }) => {
 
   return (
     <>
-      {toast && (
+      {toast.show && (
         <div className="fixed top-10 left-1/2 transform -translate-x-1/2 w-full flex justify-center pointer-events-none z-20">
-          <Toast
-            className="w-full max-w-md px-4 py-2 bg-green-500 text-white rounded-md shadow-lg"
-            message="Profile updated successfully"
-          />
+          {toast.isError ? (
+            <Toast
+              className="w-full max-w-md px-4 py-2 bg-red-500 text-white rounded-md shadow-lg"
+              message="Error updating profile"
+              isError={toast.isError}
+            />
+          ) : (
+            <Toast
+              className="w-full max-w-md px-4 py-2 bg-green-500 text-white rounded-md shadow-lg"
+              message="Profile updated successfully"
+              isError={toast.isError}
+            />
+          )}
         </div>
       )}
       <div className="flex justify-center my-14">
