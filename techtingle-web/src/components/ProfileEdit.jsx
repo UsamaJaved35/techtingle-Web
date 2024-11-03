@@ -6,16 +6,17 @@ import { profileUpdate } from "../api/user";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/userSlice";
 import Toast from "./Toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PhoneView from "./PhoneView";
-import axios from "axios";
 import { uploadPhoto } from "../api/cloudinary";
+import { signup } from "../api/auth";
 
-const ProfileEdit = ({ setIsEditing }) => {
+const ProfileEdit = ({ setIsEditing, isSignUpForm }) => {
   const user = useSelector((store) => store.user.user);
   const [toast, setToast] = useState({
     show: false,
     isError: false,
+    message: "",
   });
   const [formValues, setFormValues] = useState({
     firstName: user?.firstName || "",
@@ -26,6 +27,7 @@ const ProfileEdit = ({ setIsEditing }) => {
     gender: user?.gender || "",
     photoUrl: user?.photoUrl || "",
     skills: user?.skills || [],
+    password: "",
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,10 +53,19 @@ const ProfileEdit = ({ setIsEditing }) => {
     gender: Yup.string()
       .oneOf(["male", "female", "other"], "Invalid Gender")
       .required("Required"),
-    photoUrl: Yup.string().url("Invalid URL"),
+    photoUrl: isSignUpForm
+      ? Yup.string().url("Invalid URL").required("Required")
+      : Yup.string().url("Invalid URL"),
     skills: Yup.array()
       .min(3, "Select at least 3 skills")
       .max(20, "No more than 20 skills"),
+    password: isSignUpForm
+      ? Yup.string()
+          .min(6, "Too Short!")
+          .max(20, "Too Long!")
+          .required("Required")
+      : null,
+    email: isSignUpForm ? Yup.string().email("Invalid email") : null,
   });
 
   const handleImageUpload = async (file, setFieldValue) => {
@@ -73,15 +84,34 @@ const ProfileEdit = ({ setIsEditing }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const data = await profileUpdate(values, user);
-      dispatch(setUser(data?.data?.user));
-      setToast({ show: true, isError: false });
-      setTimeout(() => setToast({ show: false }), 3000);
-      navigate("/feed");
+      if (isSignUpForm) {
+        const data = await signup(values);
+        dispatch(setUser(data?.data?.user));
+        setToast({
+          show: true,
+          isError: false,
+          message: "Signed up successfully",
+        });
+        navigate("/feed");
+      } else {
+        const data = await profileUpdate(values, user);
+        dispatch(setUser(data?.data?.user));
+        setToast({
+          show: true,
+          isError: false,
+          message: "Profile updated successfully",
+        });
+        navigate("/feed");
+      }
     } catch (error) {
-      setToast({ show: true, isError: true });
-      setTimeout(() => setToast({ show: false }), 3000);
+      setToast({
+        show: true,
+        isError: true,
+        message: error?.response?.data?.error || "Something went wrong 🥺",
+      });
       console.error("Error updating profile", error);
+    } finally {
+      setTimeout(() => setToast({ show: false }), 3000);
     }
     setSubmitting(false);
   };
@@ -93,22 +123,25 @@ const ProfileEdit = ({ setIsEditing }) => {
           {toast.isError ? (
             <Toast
               className="w-full max-w-md px-4 py-2 bg-red-500 text-white rounded-md shadow-lg"
-              message="Error updating profile"
+              message={toast.message}
               isError={toast.isError}
             />
           ) : (
             <Toast
               className="w-full max-w-md px-4 py-2 bg-green-500 text-white rounded-md shadow-lg"
-              message="Profile updated successfully"
+              message={toast.message}
               isError={toast.isError}
             />
           )}
         </div>
       )}
       <div className="flex justify-center my-14">
-        <div className="card bg-base-300 w-[30rem] shadow-xl">
+        <div className="card bg-base-300 md:w-[30rem] w-[22.5rem] shadow-xl">
           <div className="card-body">
-            <h2 className="card-title justify-center">Edit Profile ✏️</h2>
+            <h2 className="card-title justify-center">
+              {" "}
+              {isSignUpForm ? "Sign Up 🚀" : " Edit Profile ✏️"}{" "}
+            </h2>
             <Formik
               initialValues={formValues}
               validationSchema={validationSchema}
@@ -187,7 +220,7 @@ const ProfileEdit = ({ setIsEditing }) => {
                             type="email"
                             placeholder="Email"
                             className="grow"
-                            disabled
+                            disabled={isSignUpForm ? false : true}
                           />
                           <ErrorMessage
                             name="email"
@@ -196,6 +229,26 @@ const ProfileEdit = ({ setIsEditing }) => {
                           />
                         </div>
                       </div>
+                      {isSignUpForm && (
+                        <div>
+                          <label className="block font-semibold mb-1"></label>
+                          Password:
+                          <div className="input input-bordered input-info flex items-center gap-2 p-2">
+                            <Field
+                              name="password"
+                              type="password"
+                              placeholder="Password"
+                              className="grow"
+                            />
+                            <ErrorMessage
+                              name="password"
+                              component="div"
+                              className="text-red-500"
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       <div>
                         <label className="block font-semibold mb-1">Age:</label>
                         <div className="input input-bordered input-info flex items-center gap-2 p-2">
@@ -298,38 +351,69 @@ const ProfileEdit = ({ setIsEditing }) => {
                         </div>
                       </div>
                     </div>
-
                     <div className="card-actions justify-center">
-                      <button
-                        type="button"
-                        className="btn bg-red-500 text-black hover:bg-red-600 font-semibold"
-                        onClick={() => setIsEditing(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-primary"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? (
-                          <span className="loading loading-dots loading-lg text-blue-200"></span>
-                        ) : (
-                          "Save Changes"
-                        )}
-                      </button>
+                      {!isSignUpForm && (
+                        <>
+                          <button
+                            type="button"
+                            className="btn bg-red-500 text-black hover:bg-red-600 font-semibold"
+                            onClick={() => setIsEditing(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={isSubmitting}
+                          >
+                            {isSubmitting ? (
+                              <span className="loading loading-dots loading-lg text-blue-200"></span>
+                            ) : (
+                              "Save Changes"
+                            )}
+                          </button>
+                        </>
+                      )}
+                      {isSignUpForm && (
+                        <>
+                          <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={isSubmitting}
+                          >
+                            {isSubmitting ? (
+                              <span className="loading loading-dots loading-lg text-blue-200"></span>
+                            ) : (
+                              "Sign Up"
+                            )}
+                          </button>
+                        </>
+                      )}
                     </div>
+                    {isSignUpForm && (
+                      <p className="text-sm text-center py-2 font-light text-gray-500 dark:text-gray-400">
+                        Already have an account?{" "}
+                        <Link
+                          to="/login"
+                          className="font-medium text-primary-600 hover:underline dark:text-blue-500"
+                        >
+                          Login
+                        </Link>
+                      </p>
+                    )}
                   </Form>
                 );
               }}
             </Formik>
           </div>
         </div>
-        <div className="w-[20rem] px-4 sticky top-20 hidden lg:block">
-          {formValues && (
-            <PhoneView user={formValues} isButtonsRequired={false} />
-          )}
-        </div>
+        {!isSignUpForm && (
+          <div className="w-[20rem] px-4 sticky top-20 hidden lg:block">
+            {formValues && (
+              <PhoneView user={formValues} isButtonsRequired={false} />
+            )}
+          </div>
+        )}
       </div>
     </>
   );

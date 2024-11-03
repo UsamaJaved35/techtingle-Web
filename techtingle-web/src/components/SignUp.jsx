@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import ProfileEdit from "./ProfileEdit";
 
 const SignUp = () => {
   return (
-    <div>SignUp</div>
-  )
-}
+    <div>
+      <ProfileEdit isSignUpForm={true} />
+    </div>
+  );
+};
 
-export default SignUp
+export default SignUp;

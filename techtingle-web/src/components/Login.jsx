@@ -3,7 +3,7 @@ import Alert from "./Alert";
 import { login } from "../api/auth";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const email = useRef();
@@ -53,8 +53,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center py-2 my-[6%]">
-      <div className="card bg-base-300 w-96 shadow-xl">
+    <div className="flex justify-center py-2 md:my-[6%] my-[20%]">
+      <div className="card bg-base-300 md:w-96 w-70 shadow-xl">
         <div className="card-body">
           <h2 className="card-title justify-center">Login 🔑</h2>
           <div className="p-4 my-2">
@@ -113,6 +113,15 @@ const Login = () => {
               )}
             </button>
           </div>
+          <p className="text-sm text-center py-2 font-light text-gray-500 dark:text-gray-400">
+            Don’t have an account yet?{" "}
+            <Link
+              to="/signup"
+              className="font-medium text-primary-600 hover:underline dark:text-blue-500"
+            >
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>
