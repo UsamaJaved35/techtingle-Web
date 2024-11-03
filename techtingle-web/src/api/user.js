@@ -14,3 +14,15 @@ export const feed = ()=>{
 export const profileUpdate =(data,user)=>{
     return axios.patch(`${BASE_URL}/user/${user._id}`,data,{ withCredentials: true} );
 }
+
+export const getConnections =()=>{
+    return axios.get(`${BASE_URL}/user/connections`,{ withCredentials: true });
+}
+
+export const getRequests =()=>{
+    return axios.get(`${BASE_URL}/user/requests/received`,{ withCredentials: true });
+}
+
+export const reviewRequest =(status,requestId)=>{
+    return axios.post(`${BASE_URL}/review/${status}/${requestId}`,{},{ withCredentials: true });
+}

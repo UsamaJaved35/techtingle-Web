@@ -76,7 +76,6 @@ const Login = () => {
                 placeholder="Email"
                 ref={email}
                 required
-                value={"U009@gmail.com"}
               />
             </label>
             <label className="input input-bordered input-info flex items-center gap-2 p-2 my-4">
@@ -98,7 +97,6 @@ const Login = () => {
                 ref={password}
                 placeholder="Password"
                 required
-                value={"Usama1234"}
               />
             </label>
           </div>
