@@ -1,9 +1,9 @@
 import React from "react";
 
-const Toast = ({ message }) => {
+const Toast = ({ message, isError }) => {
   return (
     <div>
-      <div className="alert alert-success">
+      <div className={`alert alert-${isError ? "error" : "success"}`}>
         <span>{message}</span>
       </div>
     </div>
