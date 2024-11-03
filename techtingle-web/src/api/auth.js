@@ -8,3 +8,7 @@ export const login = (email, password) => {
 export const logout = () => {
     return axios.post(`${BASE_URL}/auth/logout`,{}, { withCredentials: true });
 };
+
+export const signup = (data) => {
+    return axios.post(`${BASE_URL}/auth/signup`, data, { withCredentials: true });
+};
