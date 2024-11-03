@@ -29,7 +29,9 @@ const Navbar = () => {
         </div>
         {user && (
           <div className="flex-none gap-2">
-            <p className="text-lg font-bold">Welcome, {user?.firstName}</p>
+            <p className="md:text-lg font-bold md:block hidden">
+              Welcome, {user?.firstName}
+            </p>
             <div className="dropdown dropdown-end">
               <div
                 tabIndex={0}
@@ -54,7 +56,10 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <a>Settings</a>
+                  <Link to="/connections">Connections</Link>
+                </li>
+                <li>
+                  <Link to="/requests">Requests</Link>
                 </li>
                 <li>
                   <a onClick={handleLogout}>Logout</a>
