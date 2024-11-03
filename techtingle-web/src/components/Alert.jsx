@@ -2,7 +2,7 @@ import React from "react";
 
 const Alert = ({ message, isError, isWarning }) => {
   return (
-    <div>
+    <div className="flex">
       <div
         role="alert"
         className={`alert ${
@@ -12,7 +12,7 @@ const Alert = ({ message, isError, isWarning }) => {
         {isError && (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 shrink-0 stroke-current"
+            className="md:h-6 md:w-6 h-4 w-4 shrink-0 stroke-current"
             fill="none"
             viewBox="0 0 24 24"
           >
@@ -39,7 +39,7 @@ const Alert = ({ message, isError, isWarning }) => {
             />
           </svg>
         )}
-        <span>{message}</span>
+        <span className="text-sm">{message}</span>
       </div>
     </div>
   );

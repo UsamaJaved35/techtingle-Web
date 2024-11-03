@@ -82,14 +82,14 @@ const Requests = () => {
 
   if (!loading && requests.length === 0)
     return (
-      <h1 className="text-white text-bold text-center text-3xl py-4">
+      <h1 className="text-white text-bold text-center md:text-3xl text-xl py-4">
         No Requests Found 🥺
       </h1>
     );
   return (
     requests && (
       <div>
-        <h1 className="text-white text-bold text-center text-3xl py-4">
+        <h1 className="text-white text-bold text-center md:text-3xl text-xl py-4">
           Connection Requests
         </h1>
         {toast.show && (

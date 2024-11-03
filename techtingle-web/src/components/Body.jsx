@@ -18,6 +18,8 @@ const Body = () => {
 
   const fetchUser = async () => {
     const token = getCookie("token");
+
+    if (!token || !userData) return navigate("/login");
     if (userData || !token) return;
     profileView()
       .then((data) => {

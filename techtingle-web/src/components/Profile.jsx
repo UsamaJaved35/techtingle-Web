@@ -14,7 +14,7 @@ const Profile = () => {
 
   return (
     <div className="flex justify-center py-2 my-14">
-      <div className="card bg-base-300 w-[30rem] shadow-xl">
+      <div className="card bg-base-300 md:w-[30rem] w-[20.5rem] shadow-xl">
         <div className="card-body">
           <div className="card-title justify-center">
             <div className="avatar">

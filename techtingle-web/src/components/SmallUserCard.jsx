@@ -8,7 +8,7 @@ const SmallUserCard = ({
 }) => {
   return (
     <div className="flex justify-center">
-      <div className="w-full md:max-w-md max-w-sm flex items-center h-40 my-4 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+      <div className="w-full md:max-w-md max-w-sm flex items-center md:h-40 h-30 my-4 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
         <div className="flex flex-row items-center p-4">
           {/* Profile Picture */}
           <img

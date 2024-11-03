@@ -35,14 +35,14 @@ const Connections = () => {
 
   if (!loading && connections.length === 0)
     return (
-      <h1 className="text-white text-bold text-center text-3xl py-4">
+      <h1 className="text-white text-bold text-center md:text-3xl text-xl py-4">
         No Connections Found 🥺
       </h1>
     );
   return (
     connections && (
       <div>
-        <h1 className="text-white text-bold text-center text-3xl py-4">
+        <h1 className="text-white text-bold text-center md:text-3xl text-xl py-4">
           Connections
         </h1>
         <div>
