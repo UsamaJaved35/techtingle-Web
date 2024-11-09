@@ -1,5 +1,5 @@
 import React from "react";
-import UserCard from "./userCard";
+import UserCard from "./UserCard";
 const PhoneView = ({ user }) => {
   return (
     <div>
