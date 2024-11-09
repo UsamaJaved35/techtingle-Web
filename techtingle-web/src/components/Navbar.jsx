@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../api/auth";
 import { removeUser } from "../store/userSlice";
+import { clearFeed } from "../store/feedSlice";
 
 const Navbar = () => {
   const user = useSelector((store) => store.user.user);
@@ -12,6 +13,7 @@ const Navbar = () => {
     await logout()
       .then(() => {
         dispatch(removeUser());
+        dispatch(clearFeed());
         navigate("/login");
       })
       .catch((err) => {
