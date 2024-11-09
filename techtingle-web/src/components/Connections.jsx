@@ -29,7 +29,7 @@ const Connections = () => {
   if (loading && connections.length === 0)
     return (
       <div className="flex justify-center">
-        <FeedSkeleton />;
+        <FeedSkeleton />
       </div>
     );
 
