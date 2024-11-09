@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { feed, reviewConnection } from "../api/user";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed, removeUserFromFeed } from "../store/feedSlice";
-import UserCard from "./userCard";
+import UserCard from "./UserCard";
 import FeedSkeleton from "./skeletons/FeedSkeleton";
 import { useSwipeable } from "react-swipeable";
 

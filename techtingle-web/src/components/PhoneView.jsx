@@ -1,7 +1,5 @@
 import React from "react";
 import UserCard from "./userCard";
-import { useFormikContext } from "formik";
-
 const PhoneView = ({ user }) => {
   return (
     <div>
