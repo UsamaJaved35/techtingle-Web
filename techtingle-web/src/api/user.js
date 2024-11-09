@@ -26,3 +26,7 @@ export const getRequests =()=>{
 export const reviewRequest =(status,requestId)=>{
     return axios.post(`${BASE_URL}/review/${status}/${requestId}`,{},{ withCredentials: true });
 }
+
+export const reviewConnection =(status,connectionId)=>{
+    return axios.post(`${BASE_URL}/sendConnection/${status}/${connectionId}`,{},{ withCredentials: true });
+}
