@@ -88,7 +88,7 @@ const Requests = () => {
     );
   return (
     requests && (
-      <div>
+      <div className="pb-16">
         <h1 className="text-white text-bold text-center md:text-3xl text-xl py-4">
           Connection Requests
         </h1>
@@ -109,7 +109,7 @@ const Requests = () => {
             )}
           </div>
         )}
-        <div>
+        <div className="overflow-y-scroll scrollbar-hide">
           {requests.map((request) => (
             <SmallUserCard
               key={request._id}
