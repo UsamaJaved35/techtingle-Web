@@ -41,11 +41,11 @@ const Connections = () => {
     );
   return (
     connections && (
-      <div>
+      <div className="pb-16">
         <h1 className="text-white text-bold text-center md:text-3xl text-xl py-4">
           Connections
         </h1>
-        <div>
+        <div className="overflow-y-scroll scrollbar-hide">
           {connections.map((user) => (
             <SmallUserCard
               key={user._id}
