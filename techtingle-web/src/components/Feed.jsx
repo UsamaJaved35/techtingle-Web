@@ -16,53 +16,35 @@ const Feed = () => {
 
   const getFeed = () => {
     if (feedData) return;
+    setLoading(true);
     feed()
       .then((data) => {
         dispatch(addFeed(data?.data?.users));
-        setLoading(false);
       })
       .catch((err) => {
         console.error(err);
-      });
+      }).finally(() => setLoading(false));
   };
 
   useEffect(() => {
     getFeed();
-  });
-  const handleSwipe = async (direction) => {
+  }, []);
+
+  const handleSwipe = (direction) => {
     const status = direction === "Left" ? "ignored" : "interested";
     const userId = feedData[currentIndex]?._id;
     swipeSound.play();
-    try {
-      await reviewConnection(status, userId);
-      dispatch(removeUserFromFeed(userId));
-      setCurrentIndex((prevIndex) => {
-        return prevIndex + 1 < feedData.length ? prevIndex + 1 : prevIndex;
-      });
-      setDragStyle({});
-    } catch (err) {
-      console.log(err);
-      dispatch(removeUserFromFeed(userId));
-      setCurrentIndex((prevIndex) => {
-        return prevIndex + 1 < feedData.length ? prevIndex + 1 : prevIndex;
-      });
-      setDragStyle({});
-    }
-    // reviewConnection(status, userId)
-    //   .then((data) => {
-    //     dispatch(removeUserFromFeed(userId));
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     dispatch(removeUserFromFeed(userId));
-    //   })
-    //   .finally(() => {
-    //     setCurrentIndex((prevIndex) => {
-    //       return prevIndex + 1 < feedData.length ? prevIndex + 1 : prevIndex;
-    //     });
-    //     setDragStyle({});
-    //   });
+    setCurrentIndex((prevIndex) =>
+      prevIndex + 1 < feedData.length ? prevIndex + 1 : prevIndex
+    );
+    setDragStyle({});
+    dispatch(removeUserFromFeed(userId));
+
+    reviewConnection(status, userId).catch((err) => {
+      console.error("Error reviewing connection:", err);
+    });
   };
+
   const swipeHandlers = useSwipeable({
     onSwiping: (eventData) => {
       if (currentIndex < feedData.length) {
@@ -70,7 +52,7 @@ const Feed = () => {
           transform: `translate(${eventData.deltaX}px, ${
             eventData.deltaY
           }px) rotate(${eventData.deltaX * 0.08}deg)`,
-          transition: "transform 0.05s ease", // Smoother, quicker transition
+          transition: "transform 0.05s ease",
         });
       }
     },
@@ -89,10 +71,8 @@ const Feed = () => {
       )}
       {!loading && feedData && currentIndex < feedData.length && (
         <div
-          {...swipeHandlers} // Use swipeHandlers here
-          className={`absolute transition-transform duration-300 ease-in-out transform ${
-            dragStyle.transform ? dragStyle.transform : "scale-100"
-          }`}
+          {...swipeHandlers}
+          className="absolute transition-transform duration-300 ease-in-out"
           style={{
             ...dragStyle,
             maxWidth: "90%",
@@ -106,8 +86,6 @@ const Feed = () => {
         <div className="flex justify-around w-full md:mt-[35%] relative mt-[140%]">
           <div className="flex flex-col items-center">
             <div className="bg-gray-200 rounded-full p-3">
-              {" "}
-              {/* Light background for the icon */}
               <img
                 src="../../assets/swipe_left.png"
                 alt="Swipe Left"
@@ -118,8 +96,6 @@ const Feed = () => {
           </div>
           <div className="flex flex-col items-center">
             <div className="bg-gray-200 rounded-full p-3">
-              {" "}
-              {/* Light background for the icon */}
               <img
                 src="../../assets/swipe_right.png"
                 alt="Swipe Right"
