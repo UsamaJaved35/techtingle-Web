@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
+import ChatPage from "./components/ChatPage";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path="/feed" element={<Feed />} />
               <Route path="/connections" element={<Connections />} />
               <Route path="/requests" element={<Requests />} />
+              <Route path="/chats" element={<ChatPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
